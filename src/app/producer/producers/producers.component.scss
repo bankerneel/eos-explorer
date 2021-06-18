@@ -1,0 +1,15 @@
+// .mat-row:nth-child(-n+21) {
+    //  background-color: #f3d2d0;
+// }
+.mat-stroked-button{
+    //background-color: #f3d2d0;
+    background-color: #A72424;
+    color: #dfdfdf;
+    background-image: linear-gradient(300deg, rgba(167, 80, 80, 0.87) 0%, rgba(168, 57, 57, 0.651) 74%);
+}
+.mat-row .top21::before {
+    content: "Standby";
+}
+.mat-row:nth-child(-n+21) .top21::before {
+    content: "Top 21";
+}

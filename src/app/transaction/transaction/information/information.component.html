@@ -1,0 +1,183 @@
+<div *ngIf="transaction; else loading" style="margin:10px;">
+  <mat-card>
+    <mat-card-content class="table-container">
+      <table>
+        <tr>
+          <td>{{ 'Transaction ID' | translate }}:</td>
+          <td>{{transaction.id}}</td>
+        </tr>
+        <tr>
+          <td>{{ 'Block Number' | translate }}:</td>
+          <td>
+            <a [routerLink]="['/blocks',transaction.block_num]">{{transaction.block_num}}</a>
+          </td>
+        </tr>
+        <tr>
+          <td>{{ 'Timestamp' | translate }}:</td>
+          <td>{{transaction.block_time | amFromUtc | date:'MMM d, y, h:mm:ss.SSS a'}}</td>
+        </tr>
+        <tr>
+          <td>{{ 'Irreversible' | translate }}:</td>
+          <td>{{transaction.last_irreversible_block > transaction.block_num}}</td>
+        </tr>
+        <tr>
+          <td>{{ 'Pending' | translate }}:</td>
+          <td>{{transaction.trx.trx?.delay_sec > 0}}</td>
+        </tr>
+        <tr>
+          <td>{{ 'Status' | translate }}:</td>
+          <td>{{transaction.trx.receipt.status}}</td>
+        </tr>
+        <tr>
+          <td>{{ 'CPU Usage' | translate }}:</td>
+          <td>{{transaction.trx.receipt.cpu_usage_us | number }} µs</td>
+        </tr>
+        <tr>
+          <td>{{ 'NET Usage' | translate }}:</td>
+          <td>{{transaction.trx.receipt.net_usage_words | toKB | number:'1.0-3'}} KB</td>
+        </tr>
+        <tr>
+          <td>{{ 'Number of Actions' | translate }}:</td>
+          <td>{{transaction.trx.trx?.actions?.length || 0}}</td>
+        </tr>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'delegatebw'">
+          <tr >
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Net Stake Quantity' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.stake_net_quantity}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'CPU Stake Quantity' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.stake_cpu_quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'undelegatebw'">
+          <tr >
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Net Unstake Quantity' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.unstake_net_quantity}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'CPU Unstake Quantity' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.unstake_cpu_quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'buyram'">
+          <tr >
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'RAM Quantity' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.quant}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'voteproducer'">
+          <tr>
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Producer List' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.producers}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'transfer'">
+          <tr>
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'From' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.from}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'To' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.to}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Amount' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.quantity}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Memo' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.memo}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'claimrewards'">
+          <tr>
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Block Reward' | translate }}:</td>
+            <td *ngIf="blockPay.length > 0">{{blockPay[0].inline_traces[0].act.data.quantity}}</td>
+            <td *ngIf="blockPay.length == 0">{{'0.0000 ALA'}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Witness Reward' | translate }}:</td>
+            <td *ngIf="witnessPay.length > 0">{{witnessPay[0].inline_traces[0].act.data.quantity}}</td>
+            <td *ngIf="witnessPay == 0">{{'0.0000 ALA'}}</td>
+          </tr>
+          <tr>
+            <td>{{ 'Oracle Reward' | translate }}:</td>
+            <td *ngIf="oraclePay.length > 0">{{oraclePay[0].inline_traces[0].act.data.quantity}}</td>
+            <td *ngIf="oraclePay == 0">{{'0.0000 ALA'}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'claimvoterwd'">
+          <tr>
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Amount' | translate }}:</td>
+            <td>{{transaction.traces[0].inline_traces[12].act.data.quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'claimdapprwd'">
+          <tr>
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Amount' | translate }}:</td>
+            <td>{{transaction.traces[0].inline_traces[13].act.data.quantity}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'reply'">
+          <tr>
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Request ID' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.request_id}}</td>
+          </tr>
+        </ng-template>
+        <ng-template [ngIf]="transaction.trx.trx.actions[0].name == 'burntoken'">
+          <tr>
+            <td>{{ 'Action Name' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].name}}</td>
+          </tr>
+          <tr >
+            <td>{{ 'Amount' | translate }}:</td>
+            <td>{{transaction.trx.trx.actions[0].data.value}}</td>
+          </tr>
+        </ng-template>
+      </table>
+    </mat-card-content>
+  </mat-card>
+  <div *ngIf="transaction.trx.trx?.actions?.length" style="margin-top:20px;">
+    <app-transaction-actions [transaction]="transaction"></app-transaction-actions>
+  </div>
+</div>
+<ng-template #loading>
+  <app-spinner></app-spinner>
+</ng-template>

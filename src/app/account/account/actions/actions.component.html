@@ -1,0 +1,161 @@
+<ng-container *ngIf="actions; else loading">
+  <ng-container *ngIf="!actions.isError; else error">
+    <ng-container *ngIf="actions.value.length; else empty">
+      <div class="table-wrapper ng-star-inserted">
+        <table mat-table [dataSource]="actions.value">
+          <tr mat-header-row *matHeaderRowDef="actionsColumns"></tr>
+          <tr mat-row *matRowDef="let row; columns: actionsColumns;"></tr>
+          <ng-container matColumnDef="id">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Action ID' | translate }}</th>
+            <td mat-cell *matCellDef="let action">
+              <!-- <a [routerLink]="['/actions',action.blockId,action.transaction,action.seq]" [queryParams]="action.parentId > 0 ? {parentId: action.parentId} : {}">
+                <button mat-icon-button *ngIf="action.parentId === 0">
+                  <mat-icon aria-label="main action">data_usage</mat-icon>
+                </button>
+                <button mat-icon-button *ngIf="action.parentId > 0" style="margin-left:10px;">
+                  <mat-icon aria-label="inline action">subdirectory_arrow_right</mat-icon>
+                </button>
+              </a> -->
+              {{action.account_action_seq + 1}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="blockId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Block ID' | translate }}</th>
+            <td mat-cell *matCellDef="let action">
+              <a [routerLink]="['/blocks',action.block_num]">{{action.block_num}}</a>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="transactionId">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Transaction ID' | translate }}</th>
+            <td mat-cell *matCellDef="let action">
+              <a [routerLink]="['/transactions',action.block_num,action.action_trace.trx_id]">
+                <!-- <id-64 [id]="action.action_trace.trx_id"></id-64> -->
+                {{action.action_trace.trx_id | slice:0:10  }}...
+              </a>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="timestamp">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Timestamp' | translate }}</th>
+            <td mat-cell *matCellDef="let action">
+              {{action.block_time | amFromUtc | date:'MMM d, y, h:mm:ss.SSS a'}}
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="action">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Action' | translate }}</th>
+            <td mat-cell *matCellDef="let action">
+              <ng-container [ngSwitch]="action.action_trace.act.name">
+                <span *ngSwitchCase="'claimrewards'">
+                  {{action.action_trace.act.name}}
+                </span>
+                <span *ngSwitchCase="'reply'">
+                  {{action.action_trace.act.name}}
+                </span>
+                <span *ngSwitchCase="'transfer'">
+                  <ng-container [ngSwitch]="action.action_trace.act.data.from">
+                    <span *ngSwitchCase="'alaio.bpay'">
+                      Block Pay
+                    </span>
+                    <span *ngSwitchCase="'alaio.wpay'">
+                      Witness Pay
+                    </span>
+                    <span *ngSwitchCase="'alaio.opay'">
+                      Oracle Pay
+                    </span>
+                    <span *ngSwitchCase="'alaio.dpay'">
+                      DApp Developer Pay
+                    </span>
+                    <span *ngSwitchCase="'alaio.vpay'">
+                      Voter Pay
+                    </span>
+                    
+                    <span *ngSwitchDefault>
+                      Transfer
+                      <!-- {{action.action_trace.act.name}}: {{action.action_trace.act.data.from}} -> {{action.action_trace.act.data.to}} -> {{action.action_trace.act.data.quantity}} -->
+                    </span>  
+                  </ng-container>
+                </span>
+                <span *ngSwitchCase="'delegatebw'">
+                  Delegate BW
+                </span>
+                <span *ngSwitchCase="'undelegatebw'">
+                  Undelegate BW
+                </span>
+                <span *ngSwitchCase="'buyram'">
+                  Buy Ram
+                </span>
+                <!-- <span *ngSwitchCase="'claimvoterwd'">
+                  {{action.action_trace.act.name}}
+                </span>
+                <span *ngSwitchCase="'claimdappwd'">
+                  {{action.action_trace.act.name}}
+                </span> -->
+                <span *ngSwitchCase="'claim'">
+                  {{action.action_trace.act.name}}
+                </span>
+                <span *ngSwitchCase="'burntoken'">
+                  Burn Token
+                </span>
+                <span *ngSwitchDefault>
+                  Transfer
+                  <!-- {{action.action_trace.act.name}} -->
+                </span>
+              </ng-container>
+            </td>
+          </ng-container>
+          <ng-container matColumnDef="data">
+            <th mat-header-cell *matHeaderCellDef>{{ 'Data' | translate }}</th>
+              <td mat-cell *matCellDef="let action"> 
+                <ng-container [ngSwitch]="action.action_trace.act.name">
+                  <span *ngSwitchCase="'claimrewards'">
+                    {{action.action_trace.act.data.owner }}
+                  </span>
+                  <span *ngSwitchCase="'reply'">
+                    {{action.action_trace.act.data.request_id}}
+                  </span>
+                  <span *ngSwitchCase="'transfer'">
+                    {{action.action_trace.act.data.from}} -> {{action.action_trace.act.data.to}} -> {{action.action_trace.act.data.quantity}}
+                  </span>
+                  <span *ngSwitchCase="'delegatebw'">
+                    Stake Net: {{action.action_trace.act.data.stake_net_quantity}} + Stake CPU: {{action.action_trace.act.data.stake_cpu_quantity}}
+                  </span>
+                  <span *ngSwitchCase="'undelegatebw'">
+                    Unstake Net: {{action.action_trace.act.data.unstake_net_quantity}} + Unstake CPU: {{action.action_trace.act.data.unstake_cpu_quantity}}
+                  </span>
+                  <span *ngSwitchCase="'buyram'">
+                    RAM quantity: {{action.action_trace.act.data.quant}}
+                  </span>
+                  <span *ngSwitchCase="'claimvoterwd'">
+                    {{action.action_trace.act.data.owner }}
+                  </span>
+                  <span *ngSwitchCase="'claimdappwd'">
+                    {{action.action_trace.act.data.owner }}
+                  </span>
+                  <span *ngSwitchCase="'claim'">
+                    {{action.action_trace.act.data.owner }}
+                  </span>
+                  <span *ngSwitchCase="'burntoken'">
+                    {{action.action_trace.act.data.value }}
+                  </span>
+                  <span *ngSwitchDefault>
+                    {{action.action_trace.act.name}}    
+                  </span>
+                </ng-container>
+              </td>
+          </ng-container>
+        </table>
+      </div>
+      <div style="padding:10px 0;" *ngIf="accountActionSequence > 0">
+        <button mat-raised-button color="accent" (click)="onLoadMore.emit(accountActionSequence-1)">Load More</button>
+      </div>
+    </ng-container>
+    <ng-template #empty>
+      <p class="mat-body-2" style="margin:10px;">No Actions</p>
+    </ng-template>
+  </ng-container>
+  <ng-template #error>
+    <app-error></app-error>
+  </ng-template>
+</ng-container>
+<ng-template #loading>
+  <app-spinner></app-spinner>
+</ng-template>

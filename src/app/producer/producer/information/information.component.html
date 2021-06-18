@@ -1,0 +1,56 @@
+<mat-card *ngIf="producer">
+  <mat-card-title>
+    {{ 'Producer Information' | translate }}
+  </mat-card-title>
+  <mat-card-content class="table-container">
+    <table>
+      <tr *ngIf="producer.bpJson?.org?.candidate_name">
+        <td>{{ 'Name' | translate }}:</td>
+        <td>{{producer.bpJson.org.candidate_name}}</td>
+      </tr>
+      <tr *ngIf="producer.account">
+        <td>{{ 'Account Name' | translate }}:</td>
+        <td fxLayout="row" fxLayoutAlign="start center">{{producer.account.account_name}}
+          <mat-icon *ngIf="producer.validated">verified_user</mat-icon>
+        </td>
+      </tr>
+      <tr *ngIf="producer">
+        <td>{{ 'Public Key' | translate }}:</td>
+        <td fxLayout="row" fxLayoutAlign="start center">{{producer.producer_key}}
+          <mat-icon *ngIf="producer.validated">verified_user</mat-icon>
+        </td>
+      </tr>
+      <tr *ngIf="producer">
+        <td>{{ 'Votes' | translate }}:</td>
+        <td>{{producer.votes}}%</td>
+      </tr>
+      <tr *ngIf="producer">
+        <td>{{ 'Url' | translate }}:</td>
+        <td>
+          <a href="{{producer.url}}">{{producer.url}}</a>
+        </td>
+      </tr>
+      <tr *ngIf="producer">
+        <td>{{ 'Position' | translate }}:</td>
+        <td>#{{producer.position}}</td>
+      </tr>
+      <tr *ngIf="producer">
+        <td>{{ 'Daily Reward (bPay + wPay)' | translate }}:</td>
+        <td>{{producer.reward}} ALA</td>
+      </tr>
+      <tr *ngIf="producer">
+        <td>{{ 'Location' | translate }}:</td>
+        <td>{{producer.abc}} </td>
+      </tr>
+      <!-- <tr *ngIf="producer">
+        <td>
+          <button style="background-color: #A72424;
+          color: #dfdfdf;
+          background-image: linear-gradient(300deg, rgba(167, 80, 80, 0.87) 0%, rgba(168, 57, 57, 0.651) 74%);">
+            {{ 'Vote' | translate }} : {{producer.account.account_name}} 
+          </button>
+        </td>
+      </tr> -->
+    </table>
+  </mat-card-content>
+</mat-card>

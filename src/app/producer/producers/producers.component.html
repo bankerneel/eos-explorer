@@ -1,0 +1,84 @@
+<!-- <mat-toolbar color="primary"> -->
+  <!-- <h1 class="mat-headline"> -->
+    <!-- {{ 'Producers' | translate }} -->
+  <!-- </h1> -->
+<!-- </mat-toolbar> -->
+<div style="margin:10px;">
+  <app-vote-progress-bar [chainStatus]="chainStatus$ | async" style="margin:20px 0;"></app-vote-progress-bar>
+  <app-table [dataSource]="producers$ | async" [enablePager]="false">
+    <table mat-table [dataSource]="producers$ | async">
+      <ng-container *ngIf="columnHeaders$ | async as columnHeaders">
+        <tr mat-header-row *matHeaderRowDef="columnHeaders"></tr>
+        <tr mat-row *matRowDef="let row; columns: columnHeaders;"></tr>
+      </ng-container>
+      <ng-container matColumnDef="position">
+        <th mat-header-cell *matHeaderCellDef>Rank</th>
+        <td mat-cell *matCellDef="let producer">
+          {{producer.position}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="owner">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Name' | translate }}</th>
+        <td mat-cell *matCellDef="let producer">
+          <a [routerLink]="['/producers',producer.owner]">{{producer.owner}}</a>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="location">
+        <th  mat-header-cell *matHeaderCellDef>{{ 'Location' | translate }}</th>
+        <td mat-cell *matCellDef="let producer">
+          {{producer.abc}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="buttontd">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Status' | translate }}</th>
+        <td mat-cell *matCellDef="let status">
+          <span class="top21 mat-stroked-button mat-accent">
+            
+          </span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="url">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Url' | translate }}</th>
+        <td mat-cell *matCellDef="let producer">
+          <a style="color: #054364;text-decoration: underline;" href="{{producer.url}}">{{producer.url}}</a>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="numVotes">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Votes' | translate }}</th>
+        <td mat-cell *matCellDef="let producer">
+          {{producer.numVotes | number}}
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="votes">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Vote %' | translate }}</th>
+        <td mat-cell *matCellDef="let producer">
+          {{producer.votes}}
+          <span *ngIf="producer.votes">%</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="reward">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Daily Rewards' | translate }}</th>
+        <td mat-cell *matCellDef="let producer">
+          {{producer.reward}}
+          <span *ngIf="producer.reward">ALA</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="oracleReward">
+        <th mat-header-cell *matHeaderCellDef>{{ 'Oracle Rewards' | translate }}</th>
+        <td mat-cell *matCellDef="let producer">
+          {{producer.oracleReward}}
+          <span *ngIf="producer.oracleReward">ALA</span>
+        </td>
+      </ng-container>
+      <ng-container matColumnDef="totalReward">
+        <th mat-header-cell *matHeaderCellDef>
+          {{ 'Total Rewards' | translate }}
+        </th>
+        <td mat-cell *matCellDef="let producer">
+          {{producer.totalReward}}
+          <span *ngIf="producer.totalReward">ALA</span>
+        </td>
+      </ng-container>
+    </table>
+  </app-table>
+</div>

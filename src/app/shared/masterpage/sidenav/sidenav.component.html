@@ -1,0 +1,18 @@
+<mat-nav-list>
+  <ng-container *ngFor="let nav of navs">
+    <a *ngIf="!nav.external" mat-list-item [routerLink]="nav.link" routerLinkActive="active" [routerLinkActiveOptions]="{exact: true}">
+      <mat-icon matListIcon>{{nav.icon}}</mat-icon>
+      <span matLine>{{nav.name}}</span>
+    </a>
+    <a *ngIf="nav.external" mat-list-item [routerLink]="nav.link" target="_blank">
+      <mat-icon matListIcon>{{nav.icon}}</mat-icon>
+      <span matLine>{{nav.name}}</span>
+    </a>
+  </ng-container>
+  <ng-container>
+    <a mat-list-item href="http://staging.aladinnetwork.org/audittrail" target="_blank">
+      <mat-icon matListIcon>{{'how_to_vote'}}</mat-icon>
+      <span matLine>Audit Trail</span>
+    </a>
+  </ng-container>
+</mat-nav-list>
